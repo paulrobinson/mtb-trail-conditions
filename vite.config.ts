@@ -4,6 +4,7 @@ import path from 'path';
 
 export default defineConfig({
   root: 'client',
+  base: process.env.VITE_BASE_URL ?? '/',
   plugins: [react()],
   resolve: {
     alias: {
