@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── DESIGN TOKENS ─────────────────────────────────────── */
+:root {
+  --text-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
+  --text-sm:   clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);
+  --text-base: clamp(1rem,     0.95rem + 0.25vw, 1.125rem);
+  --text-lg:   clamp(1.125rem, 1rem    + 0.75vw, 1.5rem);
+  --text-xl:   clamp(1.5rem,   1.2rem  + 1.25vw, 2.25rem);
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  --content-default: 1100px;
+}
+
+/* ─── LIGHT MODE ─────────────────────────────────────────── */
+:root,
+[data-theme="light"] {
+  --color-bg:              #f0eeea;
+  --color-surface:         #f6f5f2;
+  --color-surface-2:       #faf9f7;
+  --color-surface-offset:  #e8e5e0;
+  --color-divider:         #dbd8d2;
+  --color-border:          #ccc9c2;
+  --color-text:            #1e1d1a;
+  --color-text-muted:      #6b6a65;
+  --color-text-faint:      #aeada8;
+
+  --color-primary:           #2d6a4f;
+  --color-primary-hover:     #1b4d37;
+  --color-primary-active:    #123728;
+  --color-primary-highlight: #c8ddd4;
+
+  --color-good:     #2d6a4f;  --color-good-bg:  #d8ece4;
+  --color-tacky:    #5a8a2e;  --color-tacky-bg: #deeece;
+  --color-boggy:    #b07a00;  --color-boggy-bg: #f0e4be;
+  --color-avoid:    #c0392b;  --color-avoid-bg: #fad9d6;
+
+  --shadow-sm: 0 1px 2px rgba(20,18,14,0.06);
+  --shadow-md: 0 4px 12px rgba(20,18,14,0.08);
+  --shadow-lg: 0 12px 32px rgba(20,18,14,0.12);
+}
+
+/* ─── DARK MODE ──────────────────────────────────────────── */
+[data-theme="dark"] {
+  --color-bg:              #141310;
+  --color-surface:         #1a1917;
+  --color-surface-2:       #1f1e1c;
+  --color-surface-offset:  #181715;
+  --color-divider:         #28271f;
+  --color-border:          #353430;
+  --color-text:            #e4e2de;
+  --color-text-muted:      #7e7d79;
+  --color-text-faint:      #565550;
+
+  --color-primary:           #52b788;
+  --color-primary-hover:     #74c69d;
+  --color-primary-active:    #95d5b2;
+  --color-primary-highlight: #1f3a2e;
+
+  --color-good:     #52b788;  --color-good-bg:  #1a3028;
+  --color-tacky:    #7ec44a;  --color-tacky-bg: #1e2e12;
+  --color-boggy:    #e0a020;  --color-boggy-bg: #2e2308;
+  --color-avoid:    #e55c4a;  --color-avoid-bg: #301510;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.25);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.35);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.45);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --color-bg:              #f0eeea;
+    --color-surface:         #f6f5f2;
+    --color-surface-2:       #faf9f7;
+    --color-surface-offset:  #e8e5e0;
+    --color-divider:         #dbd8d2;
+    --color-border:          #ccc9c2;
+    --color-text:            #1e1d1a;
+    --color-text-muted:      #6b6a65;
+    --color-text-faint:      #aeada8;
+    --color-primary:           #2d6a4f;
+    --color-primary-hover:     #1b4d37;
+    --color-primary-active:    #123728;
+    --color-primary-highlight: #c8ddd4;
+    --color-good:     #2d6a4f;  --color-good-bg:  #d8ece4;
+    --color-tacky:    #5a8a2e;  --color-tacky-bg: #deeece;
+    --color-boggy:    #b07a00;  --color-boggy-bg: #f0e4be;
+    --color-avoid:    #c0392b;  --color-avoid-bg: #fad9d6;
+    --shadow-sm: 0 1px 2px rgba(20,18,14,0.06);
+    --shadow-md: 0 4px 12px rgba(20,18,14,0.08);
+    --shadow-lg: 0 12px 32px rgba(20,18,14,0.12);
+  }
+}
+
+/* ─── BASE ───────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: 'Satoshi', 'Inter', sans-serif;
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: 1.6;
+  transition: background-color 0.25s, color 0.25s;
+  margin: 0;
+  padding: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
