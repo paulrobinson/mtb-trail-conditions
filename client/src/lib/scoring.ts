@@ -52,12 +52,12 @@ export function scoreConditions(
   }
 
   const recentTemps = daily.temperature_2m_mean.slice(-3);
-  const avgTemp = recentTemps.reduce((a, b) => a + (b ?? 0), 0) / recentTemps.length;
+  const avgTemp = recentTemps.reduce<number>((a, b) => a + (b ?? 0), 0) / recentTemps.length;
   if (avgTemp < 2)       weightedRain *= 1.2;
   else if (avgTemp > 12) weightedRain *= 0.85;
 
   const recentWind = daily.wind_speed_10m_max.slice(-3);
-  const avgWind = recentWind.reduce((a, b) => a + (b ?? 0), 0) / recentWind.length;
+  const avgWind = recentWind.reduce<number>((a, b) => a + (b ?? 0), 0) / recentWind.length;
   if (avgWind > 25) weightedRain *= 0.9;
 
   let conditionKey: ConditionKey;
@@ -80,8 +80,8 @@ export function scoreConditions(
   });
 
   const precip = daily.precipitation_sum;
-  const totalLast7  = precip.slice(-7).reduce((a, b) => a + (b ?? 0), 0);
-  const totalLast14 = precip.reduce((a, b) => a + (b ?? 0), 0);
+  const totalLast7  = precip.slice(-7).reduce<number>((a, b) => a + (b ?? 0), 0);
+  const totalLast14 = precip.reduce<number>((a, b) => a + (b ?? 0), 0);
 
   return {
     conditionKey,
