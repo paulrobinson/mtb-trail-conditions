@@ -31,7 +31,7 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
+      <Router base={import.meta.env.BASE_URL}>
         <Header theme={theme} onToggleTheme={toggleTheme} />
         <Route path="/" component={Home} />
       </Router>
