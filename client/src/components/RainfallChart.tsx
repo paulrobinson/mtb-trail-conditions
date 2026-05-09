@@ -82,7 +82,7 @@ export function RainfallChart({
             key={dateStr}
             className={`flex-1 text-center leading-snug whitespace-nowrap py-1 ${
               isSelected
-                ? 'text-primary font-bold underline underline-offset-4'
+                ? 'text-primary font-bold'
                 : isForecast
                 ? 'text-text-faint opacity-60'
                 : 'text-text-faint'
@@ -115,7 +115,7 @@ export function RainfallChart({
             Forecast
           </span>
         )}
-        <span className="flex items-center gap-1 text-primary font-bold underline underline-offset-2">
+        <span className="flex items-center gap-1 text-primary font-bold">
           Selected
         </span>
       </div>
