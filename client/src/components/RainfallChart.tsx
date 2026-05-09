@@ -30,19 +30,27 @@ export function RainfallChart({
   todayStr,
   selectedDate,
 }: RainfallChartProps) {
-  const precipValues = daily.precipitation_sum.map(v => v ?? 0);
+  // Only show the 7 most recent past days (up to and including today)
+  const startIdx = todayIdx >= 0 ? Math.max(0, todayIdx - 6) : 0;
+  const endIdx   = todayIdx >= 0 ? todayIdx + 1 : daily.time.length;
+  const times    = daily.time.slice(startIdx, endIdx);
+  const precips  = daily.precipitation_sum.slice(startIdx, endIdx);
+
+  const precipValues = precips.map(v => v ?? 0);
   const maxPrecip = Math.max(...precipValues, 1);
   const selectedD = new Date(selectedDate + 'T12:00:00');
 
   return (
-    <div className="flex items-end gap-[3px] h-[60px]">
-      {daily.time.map((dateStr, i) => {
+    <div className="overflow-x-auto">
+    <div className="flex items-end gap-[3px] h-[60px] min-w-[200px]">
+      {times.map((dateStr, i) => {
+        const i_orig = startIdx + i;
         const mm = precipValues[i] ?? 0;
         const pct = Math.max(2, (mm / maxPrecip) * 100);
         const isSelected = dateStr === selectedDate;
         const isToday    = dateStr === todayStr;
-        const isFuture   = todayIdx >= 0 && i > todayIdx;
-        const isBeyond   = scoreDateIdx >= 0 && i > scoreDateIdx;
+        const isFuture   = todayIdx >= 0 && i_orig > todayIdx;
+        const isBeyond   = scoreDateIdx >= 0 && i_orig > scoreDateIdx;
         const d = new Date(dateStr + 'T12:00:00');
         const lbl = isToday
           ? 'Today'
@@ -71,6 +79,7 @@ export function RainfallChart({
           </div>
         );
       })}
+    </div>
     </div>
   );
 }

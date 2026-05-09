@@ -65,7 +65,7 @@ export function scoreConditions(
   if (weightedRain < 15)       { conditionKey = 'good';  conditionLabel = 'Riding Good'; }
   else if (weightedRain < 35)  { conditionKey = 'tacky'; conditionLabel = 'Tacky — Nice'; }
   else if (weightedRain < 65)  { conditionKey = 'boggy'; conditionLabel = 'Getting Boggy'; }
-  else                         { conditionKey = 'avoid'; conditionLabel = 'Swamp Mode'; }
+  else                         { conditionKey = 'avoid'; conditionLabel = 'Swampy'; }
 
   const trailConditions: ScoredTrail[] = centre.trails.map(trail => {
     const sensitivity = centre.surfaceSensitivity[trail.surfaceType] ?? 0.7;

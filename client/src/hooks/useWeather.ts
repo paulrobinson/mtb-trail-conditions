@@ -56,9 +56,13 @@ async function fetchWeather(): Promise<WeatherApiResponse> {
   return weatherApiResponseSchema.parse(await res.json());
 }
 
+const ONE_HOUR = 60 * 60 * 1000;
+
 export function useWeather() {
   return useQuery<WeatherApiResponse, Error>({
     queryKey: ['weather'],
     queryFn: fetchWeather,
+    staleTime: ONE_HOUR,
+    refetchInterval: ONE_HOUR,
   });
 }

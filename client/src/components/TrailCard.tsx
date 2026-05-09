@@ -117,7 +117,7 @@ export function TrailCard({ centre, weatherData, selectedDate }: TrailCardProps)
       {/* ── Rainfall chart ─────────────────────────── */}
       <CardFooter>
         <p className="text-xs font-bold text-text-muted uppercase tracking-widest">
-          Rainfall — Past 14 Days + Forecast
+          Rainfall — Past 7 Days
           {!isToday && (
             <span className="normal-case font-normal text-primary"> · Selected day highlighted</span>
           )}
