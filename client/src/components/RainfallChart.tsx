@@ -9,18 +9,25 @@ interface RainfallChartProps {
   selectedDate: string;
 }
 
-function barStyle(
-  isToday: boolean,
-  isFuture: boolean,
-  isBeyond: boolean,
-  isSelected: boolean
-): CSSProperties {
-  const base = 'var(--color-primary)';
-  if (isBeyond)                    return { background: base, opacity: 0.2 };
-  if (isFuture)                    return { background: 'var(--color-text-faint)', opacity: 0.4 };
-  if (isSelected && !isToday)      return { background: base, opacity: 1, filter: 'brightness(1.4)' };
-  if (isToday)                     return { background: base, opacity: 1 };
-  return                                  { background: base, opacity: 0.65 };
+export function rainfallWindow(
+  totalDays: number,
+  scoreDateIdx: number,
+  todayIdx: number,
+): { startIdx: number; endIdx: number } {
+  const centerIdx = scoreDateIdx >= 0 ? scoreDateIdx : (todayIdx >= 0 ? todayIdx : 0);
+  const startIdx = Math.max(0, centerIdx - 5);
+  const endIdx = Math.min(totalDays, centerIdx + 3); // +2 days after selected = +3 exclusive
+  return { startIdx, endIdx };
+}
+
+function barStyle(isForecast: boolean, isSelected: boolean): CSSProperties {
+  if (isSelected) {
+    return { background: 'var(--color-primary)', opacity: 1 };
+  }
+  if (isForecast) {
+    return { background: 'var(--color-text-faint)', opacity: 0.55 };
+  }
+  return { background: 'var(--color-primary)', opacity: 0.65 };
 }
 
 export function RainfallChart({
@@ -30,56 +37,88 @@ export function RainfallChart({
   todayStr,
   selectedDate,
 }: RainfallChartProps) {
-  // Only show the 7 most recent past days (up to and including today)
-  const startIdx = todayIdx >= 0 ? Math.max(0, todayIdx - 6) : 0;
-  const endIdx   = todayIdx >= 0 ? todayIdx + 1 : daily.time.length;
-  const times    = daily.time.slice(startIdx, endIdx);
-  const precips  = daily.precipitation_sum.slice(startIdx, endIdx);
+  const { startIdx, endIdx } = rainfallWindow(daily.time.length, scoreDateIdx, todayIdx);
+  const times   = daily.time.slice(startIdx, endIdx);
+  const precips = daily.precipitation_sum.slice(startIdx, endIdx);
 
   const precipValues = precips.map(v => v ?? 0);
-  const maxPrecip = Math.max(...precipValues, 1);
-  const selectedD = new Date(selectedDate + 'T12:00:00');
+  const maxPrecip    = Math.max(...precipValues, 1);
+
+  const hasActual   = times.some((_, i) => (startIdx + i) <= todayIdx);
+  const hasForecasts = times.some((_, i) => (startIdx + i) > todayIdx);
 
   return (
     <div className="overflow-x-auto">
-    <div className="flex items-end gap-[3px] h-[60px] min-w-[200px]">
-      {times.map((dateStr, i) => {
-        const i_orig = startIdx + i;
-        const mm = precipValues[i] ?? 0;
-        const pct = Math.max(2, (mm / maxPrecip) * 100);
-        const isSelected = dateStr === selectedDate;
-        const isToday    = dateStr === todayStr;
-        const isFuture   = todayIdx >= 0 && i_orig > todayIdx;
-        const isBeyond   = scoreDateIdx >= 0 && i_orig > scoreDateIdx;
-        const d = new Date(dateStr + 'T12:00:00');
-        const lbl = isToday
-          ? 'Today'
-          : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'numeric' });
+      <div className="flex items-end gap-[3px] h-[60px] min-w-[200px]">
+        {times.map((dateStr, i) => {
+          const i_orig     = startIdx + i;
+          const mm         = precipValues[i] ?? 0;
+          const pct        = Math.max(2, (mm / maxPrecip) * 100);
+          const isSelected = dateStr === selectedDate;
+          const isToday    = dateStr === todayStr;
+          const isForecast = todayIdx >= 0 && i_orig > todayIdx;
+          const d          = new Date(dateStr + 'T12:00:00');
+          const lbl        = isToday
+            ? 'Today'
+            : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'numeric' });
 
-        return (
-          <div
-            key={dateStr}
-            className="flex-1 flex flex-col items-center gap-0.5 h-full justify-end"
-            title={`${dateStr}: ${mm.toFixed(1)}mm`}
-          >
+          return (
             <div
-              className="w-full rounded-t-[2px] min-h-[2px] transition-all duration-500"
-              style={{ height: `${pct}%`, ...barStyle(isToday, isFuture, isBeyond, isSelected) }}
-            />
-            <div
-              className={`text-center leading-tight whitespace-nowrap ${
-                isSelected ? 'text-primary font-bold' : 'text-text-faint'
+              key={dateStr}
+              className={`flex-1 relative flex flex-col items-center gap-0.5 h-full justify-end ${
+                isSelected ? 'border-t-2 border-primary' : ''
               }`}
-              style={{ fontSize: 9 }}
+              title={`${dateStr}: ${mm.toFixed(1)}mm (${isForecast ? 'forecast' : 'actual'})`}
             >
-              {isSelected && !isToday
-                ? selectedD.toLocaleDateString('en-GB', { weekday: 'short' })
-                : lbl}
+              <div
+                className="w-full rounded-t-[2px] min-h-[2px] transition-all duration-500"
+                style={{ height: `${pct}%`, ...barStyle(isForecast, isSelected) }}
+              />
+              <div
+                className={`text-center leading-tight whitespace-nowrap ${
+                  isSelected
+                    ? 'text-primary font-bold'
+                    : isForecast
+                    ? 'text-text-faint opacity-60'
+                    : 'text-text-faint'
+                }`}
+                style={{ fontSize: 9 }}
+              >
+                {lbl}
+              </div>
             </div>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+
+      {/* Legend */}
+      <div className="flex gap-3 mt-2 justify-end" style={{ fontSize: 9 }}>
+        {hasActual && (
+          <span className="flex items-center gap-1 text-text-faint">
+            <span
+              className="inline-block w-2.5 h-2.5 rounded-sm"
+              style={{ background: 'var(--color-primary)', opacity: 0.65 }}
+            />
+            Actual
+          </span>
+        )}
+        {hasForecasts && (
+          <span className="flex items-center gap-1 text-text-faint">
+            <span
+              className="inline-block w-2.5 h-2.5 rounded-sm"
+              style={{ background: 'var(--color-text-faint)', opacity: 0.55 }}
+            />
+            Forecast
+          </span>
+        )}
+        <span className="flex items-center gap-1 text-primary font-bold">
+          <span
+            className="inline-block w-2.5 h-2.5 rounded-sm border-t-2 border-primary"
+            style={{ background: 'var(--color-primary)', opacity: 1 }}
+          />
+          Selected
+        </span>
+      </div>
     </div>
   );
 }
