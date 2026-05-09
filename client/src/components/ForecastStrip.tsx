@@ -6,9 +6,10 @@ interface ForecastStripProps {
   todayIdx: number;
   selectedDate: string;
   todayStr: string;
+  onSelect: (date: string) => void;
 }
 
-export function ForecastStrip({ daily, todayIdx, selectedDate, todayStr }: ForecastStripProps) {
+export function ForecastStrip({ daily, todayIdx, selectedDate, todayStr, onSelect }: ForecastStripProps) {
   const forecastStart = todayIdx >= 0 ? todayIdx : 0;
   const sliceDates = daily.time.slice(forecastStart, forecastStart + 7);
 
@@ -30,12 +31,14 @@ export function ForecastStrip({ daily, todayIdx, selectedDate, todayStr }: Forec
         const icon = weatherIcon(mm, wMax, tMax);
 
         return (
-          <div
+          <button
             key={dateStr}
-            className={`flex-shrink-0 min-w-[70px] flex flex-col items-center gap-1 px-2 py-3 rounded-lg text-center border ${
+            type="button"
+            onClick={() => onSelect(dateStr)}
+            className={`flex-shrink-0 min-w-[70px] flex flex-col items-center gap-1 px-2 py-3 rounded-lg text-center border transition-colors cursor-pointer ${
               isSelected
                 ? 'border-primary bg-primary-highlight'
-                : 'border-transparent bg-surface-2'
+                : 'border-transparent bg-surface-2 hover:border-primary/40 hover:bg-primary-highlight/40'
             }`}
           >
             <div className={`text-xs font-bold uppercase tracking-wider ${isSelected ? 'text-primary' : 'text-text-muted'}`}>
@@ -60,7 +63,7 @@ export function ForecastStrip({ daily, todayIdx, selectedDate, todayStr }: Forec
             <div className="text-text-faint" style={{ fontSize: 9 }}>
               {wMax} km/h {wDir}
             </div>
-          </div>
+          </button>
         );
       })}
     </div>

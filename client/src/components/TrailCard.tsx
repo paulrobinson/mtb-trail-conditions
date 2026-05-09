@@ -13,9 +13,10 @@ interface TrailCardProps {
   centre: TrailCentre;
   weatherData: OpenMeteoResponse;
   selectedDate: string;
+  onSelectDate: (date: string) => void;
 }
 
-export function TrailCard({ centre, weatherData, selectedDate }: TrailCardProps) {
+export function TrailCard({ centre, weatherData, selectedDate, onSelectDate }: TrailCardProps) {
   const today  = getTodayStr();
   const days   = weatherData.daily;
   const n      = days.time.length;
@@ -96,6 +97,7 @@ export function TrailCard({ centre, weatherData, selectedDate }: TrailCardProps)
             todayIdx={todayIdx}
             selectedDate={selectedDate}
             todayStr={today}
+            onSelect={onSelectDate}
           />
           <div className="flex flex-wrap gap-2 mt-4">
             {isToday ? (
@@ -117,10 +119,7 @@ export function TrailCard({ centre, weatherData, selectedDate }: TrailCardProps)
       {/* ── Rainfall chart ─────────────────────────── */}
       <CardFooter>
         <p className="text-xs font-bold text-text-muted uppercase tracking-widest">
-          Rainfall — Past 7 Days
-          {!isToday && (
-            <span className="normal-case font-normal text-primary"> · Selected day highlighted</span>
-          )}
+          Rainfall
         </p>
         <div className="mt-3">
           <RainfallChart

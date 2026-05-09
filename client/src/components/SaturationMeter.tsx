@@ -38,7 +38,7 @@ export function SaturationMeter({ saturationPct, totalLast7, totalLast14, dryStr
       <div className="flex flex-wrap gap-2">
         <StatPill label="Rain prev 7d" value={`${totalLast7}mm`} />
         <StatPill label="Rain prev 14d" value={`${totalLast14}mm`} />
-        {dryStreak > 0 && <StatPill label="Dry run-in" value={`${dryStreak}d`} />}
+        <StatPill label="Dry run-in" value={dryStreak > 0 ? `${dryStreak}d` : '—'} />
       </div>
     </div>
   );
