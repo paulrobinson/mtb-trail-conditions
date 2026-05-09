@@ -76,18 +76,18 @@ export function RainfallChart({
       </div>
 
       {/* X-axis labels */}
-      <div className="flex gap-[3px] mt-1">
+      <div className="flex gap-[3px] mt-2">
         {days.map(({ dateStr, isSelected, isForecast, weekday, dayMonth }) => (
           <div
             key={dateStr}
-            className={`flex-1 text-center leading-none whitespace-nowrap ${
+            className={`flex-1 text-center leading-snug whitespace-nowrap py-1 ${
               isSelected
-                ? 'text-primary font-bold underline underline-offset-2'
+                ? 'text-primary font-bold underline underline-offset-4'
                 : isForecast
                 ? 'text-text-faint opacity-60'
                 : 'text-text-faint'
             }`}
-            style={{ fontSize: 9 }}
+            style={{ fontSize: 10 }}
           >
             <div>{weekday}</div>
             <div>{dayMonth}</div>
