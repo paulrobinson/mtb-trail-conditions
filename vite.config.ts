@@ -25,6 +25,9 @@ export default defineConfig({
       },
     },
   },
+  define: {
+    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+  },
   build: {
     outDir: path.resolve(__dirname, 'dist/client'),
     emptyOutDir: true,

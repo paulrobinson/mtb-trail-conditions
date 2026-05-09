@@ -76,7 +76,7 @@ export function Home() {
         </div>
       </main>
 
-      <footer className="border-t border-divider px-6 py-6 text-center">
+      <footer className="border-t border-divider px-6 py-6 text-center space-y-1">
         <p className="text-xs text-text-faint">
           Weather data from{' '}
           <a href="https://open-meteo.com" target="_blank" rel="noopener" className="text-primary hover:underline">
@@ -85,6 +85,13 @@ export function Home() {
           {' '}— free, open-source, no API key required. Condition scoring based on rainfall
           accumulation, drainage characteristics, and temperature. For planning purposes only —
           always ride to your ability.
+        </p>
+        <p className="text-xs text-text-faint opacity-60">
+          Built{' '}
+          {new Date(__BUILD_TIME__).toLocaleString(undefined, {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+          })}
         </p>
       </footer>
     </>
