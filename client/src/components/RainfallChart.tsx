@@ -44,51 +44,55 @@ export function RainfallChart({
   const precipValues = precips.map(v => v ?? 0);
   const maxPrecip    = Math.max(...precipValues, 1);
 
-  const hasActual   = times.some((_, i) => (startIdx + i) <= todayIdx);
+  const hasActual    = times.some((_, i) => (startIdx + i) <= todayIdx);
   const hasForecasts = times.some((_, i) => (startIdx + i) > todayIdx);
+
+  const days = times.map((dateStr, i) => {
+    const i_orig     = startIdx + i;
+    const mm         = precipValues[i] ?? 0;
+    const pct        = Math.max(2, (mm / maxPrecip) * 100);
+    const isSelected = dateStr === selectedDate;
+    const isToday    = dateStr === todayStr;
+    const isForecast = todayIdx >= 0 && i_orig > todayIdx;
+    const d          = new Date(dateStr + 'T12:00:00');
+    const weekday    = d.toLocaleDateString('en-GB', { weekday: 'short' });
+    const dayMonth   = isToday ? 'Today' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'numeric' });
+    return { dateStr, mm, pct, isSelected, isForecast, weekday, dayMonth };
+  });
 
   return (
     <div className="overflow-x-auto">
-      <div className="flex items-end gap-[3px] h-[60px] min-w-[200px]">
-        {times.map((dateStr, i) => {
-          const i_orig     = startIdx + i;
-          const mm         = precipValues[i] ?? 0;
-          const pct        = Math.max(2, (mm / maxPrecip) * 100);
-          const isSelected = dateStr === selectedDate;
-          const isToday    = dateStr === todayStr;
-          const isForecast = todayIdx >= 0 && i_orig > todayIdx;
-          const d          = new Date(dateStr + 'T12:00:00');
-          const lbl        = isToday
-            ? 'Today'
-            : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'numeric' });
-
-          return (
+      {/* Bars */}
+      <div className="flex items-end gap-[3px] h-[56px] min-w-[200px]">
+        {days.map(({ dateStr, mm, pct, isSelected, isForecast }) => (
+          <div key={dateStr} className="flex-1 h-full flex flex-col justify-end">
             <div
-              key={dateStr}
-              className={`flex-1 relative flex flex-col items-center gap-0.5 h-full justify-end ${
-                isSelected ? 'border-t-2 border-primary' : ''
-              }`}
+              className="w-full rounded-t-[2px] min-h-[2px] transition-all duration-500"
+              style={{ height: `${pct}%`, ...barStyle(isForecast, isSelected) }}
               title={`${dateStr}: ${mm.toFixed(1)}mm (${isForecast ? 'forecast' : 'actual'})`}
-            >
-              <div
-                className="w-full rounded-t-[2px] min-h-[2px] transition-all duration-500"
-                style={{ height: `${pct}%`, ...barStyle(isForecast, isSelected) }}
-              />
-              <div
-                className={`text-center leading-tight whitespace-nowrap ${
-                  isSelected
-                    ? 'text-primary font-bold'
-                    : isForecast
-                    ? 'text-text-faint opacity-60'
-                    : 'text-text-faint'
-                }`}
-                style={{ fontSize: 9 }}
-              >
-                {lbl}
-              </div>
-            </div>
-          );
-        })}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* X-axis labels */}
+      <div className="flex gap-[3px] mt-1">
+        {days.map(({ dateStr, isSelected, isForecast, weekday, dayMonth }) => (
+          <div
+            key={dateStr}
+            className={`flex-1 text-center leading-none whitespace-nowrap ${
+              isSelected
+                ? 'text-primary font-bold underline underline-offset-2'
+                : isForecast
+                ? 'text-text-faint opacity-60'
+                : 'text-text-faint'
+            }`}
+            style={{ fontSize: 9 }}
+          >
+            <div>{weekday}</div>
+            <div>{dayMonth}</div>
+          </div>
+        ))}
       </div>
 
       {/* Legend */}
@@ -111,11 +115,7 @@ export function RainfallChart({
             Forecast
           </span>
         )}
-        <span className="flex items-center gap-1 text-primary font-bold">
-          <span
-            className="inline-block w-2.5 h-2.5 rounded-sm border-t-2 border-primary"
-            style={{ background: 'var(--color-primary)', opacity: 1 }}
-          />
+        <span className="flex items-center gap-1 text-primary font-bold underline underline-offset-2">
           Selected
         </span>
       </div>

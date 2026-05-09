@@ -117,7 +117,7 @@ export function TrailCard({ centre, weatherData, selectedDate }: TrailCardProps)
       {/* ── Rainfall chart ─────────────────────────── */}
       <CardFooter>
         <p className="text-xs font-bold text-text-muted uppercase tracking-widest">
-          Rainfall — 5 Days Prior · Selected · 2 Days After
+          Rainfall
         </p>
         <div className="mt-3">
           <RainfallChart
