@@ -70,6 +70,7 @@ export function Home() {
                 centre={centre}
                 weatherData={weather}
                 selectedDate={selectedDate}
+                onSelectDate={setSelectedDate}
               />
             );
           })}
