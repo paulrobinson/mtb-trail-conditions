@@ -49,20 +49,19 @@ export function TrailCard({ centre, weatherData, selectedDate, onSelectDate }: T
 
       {/* ── Header ─────────────────────────────────── */}
       <CardHeader>
-        <div className="flex flex-col gap-1">
-          <span className="text-xs font-semibold text-text-muted uppercase tracking-widest">
-            {centre.location}
-          </span>
+        <span className="text-xs font-semibold text-text-muted uppercase tracking-widest">
+          {centre.location}
+        </span>
+        <div className="flex items-center justify-between gap-4">
           <h2 className="font-display text-xl font-extrabold tracking-tight text-text leading-tight">
             {centre.name}
           </h2>
-          <p className="text-xs text-text-faint mt-1">{centre.note}</p>
+          <ConditionBadge
+            conditionKey={score.conditionKey}
+            conditionLabel={score.conditionLabel}
+            scoreDateLabel={scoreDateLabel}
+          />
         </div>
-        <ConditionBadge
-          conditionKey={score.conditionKey}
-          conditionLabel={score.conditionLabel}
-          scoreDateLabel={scoreDateLabel}
-        />
       </CardHeader>
 
       {/* ── Two-column body ────────────────────────── */}
