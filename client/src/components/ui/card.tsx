@@ -20,8 +20,7 @@ export const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<
     <div
       ref={ref}
       className={cn(
-        'grid grid-cols-[1fr_auto] items-start gap-4 p-6 border-b border-divider',
-        'max-sm:grid-cols-1',
+        'flex flex-col gap-2 p-6 border-b border-divider',
         className
       )}
       {...props}
