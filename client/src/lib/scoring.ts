@@ -30,7 +30,7 @@ function getDryStreak(precipArr: (number | null)[]): number {
  *     - days 8+      → weight 0.6
  *  2. Per-centre drainage factor reduces effective saturation.
  *  3. Temperature and wind adjustments.
- *  4. Maps to Good / Tacky / Boggy / Avoid.
+ *  4. Maps to Dry / Grippy / Muddy / Boggy.
  *
  *  Pass a slice of daily data up to and including the target date.
  *  All totals (last 7d, last 14d, dry streak) are relative to the end of that slice.
@@ -62,20 +62,20 @@ export function scoreConditions(
 
   let conditionKey: ConditionKey;
   let conditionLabel: string;
-  if (weightedRain < 15)       { conditionKey = 'good';  conditionLabel = 'Riding Good'; }
-  else if (weightedRain < 35)  { conditionKey = 'tacky'; conditionLabel = 'Tacky — Nice'; }
-  else if (weightedRain < 65)  { conditionKey = 'boggy'; conditionLabel = 'Getting Boggy'; }
-  else                         { conditionKey = 'avoid'; conditionLabel = 'Swampy'; }
+  if (weightedRain < 15)       { conditionKey = 'good';  conditionLabel = 'Dry'; }
+  else if (weightedRain < 35)  { conditionKey = 'tacky'; conditionLabel = 'Grippy'; }
+  else if (weightedRain < 65)  { conditionKey = 'boggy'; conditionLabel = 'Muddy'; }
+  else                         { conditionKey = 'avoid'; conditionLabel = 'Boggy'; }
 
   const trailConditions: ScoredTrail[] = centre.trails.map(trail => {
     const sensitivity = centre.surfaceSensitivity[trail.surfaceType] ?? 0.7;
     const effectiveScore = weightedRain * sensitivity;
     let status: string;
     let statusClass: ConditionKey;
-    if (effectiveScore < 15)       { status = 'Riding well';   statusClass = 'good'; }
-    else if (effectiveScore < 35)  { status = 'Tacky, fun';    statusClass = 'tacky'; }
-    else if (effectiveScore < 65)  { status = 'Muddy patches'; statusClass = 'boggy'; }
-    else                           { status = 'Avoid';         statusClass = 'avoid'; }
+    if (effectiveScore < 15)       { status = 'Dry';    statusClass = 'good'; }
+    else if (effectiveScore < 35)  { status = 'Grippy'; statusClass = 'tacky'; }
+    else if (effectiveScore < 65)  { status = 'Muddy';  statusClass = 'boggy'; }
+    else                           { status = 'Boggy';  statusClass = 'avoid'; }
     return { ...trail, status, statusClass };
   });
 
