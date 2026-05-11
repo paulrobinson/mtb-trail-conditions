@@ -52,7 +52,7 @@ export function TrailCard({ centre, weatherData, selectedDate, onSelectDate }: T
         <span className="text-xs font-semibold text-text-muted uppercase tracking-widest">
           {centre.location}
         </span>
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-start justify-between gap-4">
           <h2 className="font-display text-xl font-extrabold tracking-tight text-text leading-tight">
             {centre.name}
           </h2>
