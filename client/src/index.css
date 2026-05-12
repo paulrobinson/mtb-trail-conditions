@@ -132,6 +132,32 @@ body {
   padding: 0;
 }
 
+/* ─── SCROLLBARS ─────────────────────────────────────────── */
+/* Firefox */
+* {
+  scrollbar-color: var(--color-border) var(--color-surface-offset);
+}
+
+/* WebKit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-offset);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-faint);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
