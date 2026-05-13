@@ -10,12 +10,6 @@ const CENTRE: TrailCentre = {
   lon: -3.0,
   timezone: 'Europe/London',
   note: '',
-  trails: [
-    { name: 'Engineered trail',       terrainClass: 'engineered' },
-    { name: 'Reinforced trail',       terrainClass: 'reinforced' },
-    { name: 'Natural-improved trail', terrainClass: 'natural-improved' },
-    { name: 'Natural trail',          terrainClass: 'natural' },
-  ],
 };
 
 function makeDaily(precipMm: number[], tempMean = 10, wind = 10) {
@@ -48,8 +42,17 @@ describe('scoreConditions — centre-level thresholds', () => {
   });
 });
 
+describe('scoreConditions — all four terrain classes always present', () => {
+  it('always returns exactly four terrain class rows', () => {
+    const result = scoreConditions(CENTRE, makeDaily(new Array(14).fill(3)), 0.5);
+    expect(result.trailConditions).toHaveLength(4);
+    const classes = result.trailConditions.map(t => t.terrainClass);
+    expect(classes).toEqual(['engineered', 'reinforced', 'natural-improved', 'natural']);
+  });
+});
+
 describe('scoreConditions — drainageFactor effect', () => {
-  const rain = makeDaily(new Array(14).fill(3)); // moderate constant rain
+  const rain = makeDaily(new Array(14).fill(3));
 
   it('higher drainageFactor gives lower saturation', () => {
     const rockySite = scoreConditions(CENTRE, rain, 0.75);
@@ -64,21 +67,11 @@ describe('scoreConditions — drainageFactor effect', () => {
   });
 });
 
-describe('scoreConditions — TerrainClass sensitivity', () => {
-  const heavyRain = makeDaily(new Array(14).fill(4));
-
-  it('engineered trails score better than natural on the same rain', () => {
-    const result = scoreConditions(CENTRE, heavyRain, 0.5);
-    const engineered = result.trailConditions.find(t => t.terrainClass === 'engineered')!;
-    const natural    = result.trailConditions.find(t => t.terrainClass === 'natural')!;
+describe('scoreConditions — TerrainClass sensitivity ordering', () => {
+  it('engineered always scores better than or equal to natural on the same rain', () => {
+    const result = scoreConditions(CENTRE, makeDaily(new Array(14).fill(4)), 0.5);
     const order: Record<string, number> = { good: 0, tacky: 1, boggy: 2, avoid: 3 };
-    expect(order[engineered.statusClass]).toBeLessThanOrEqual(order[natural.statusClass]);
-  });
-
-  it('terrain classes are ordered from best to worst drainage', () => {
-    const result = scoreConditions(CENTRE, heavyRain, 0.5);
     const byClass = Object.fromEntries(result.trailConditions.map(t => [t.terrainClass, t.statusClass]));
-    const order: Record<string, number> = { good: 0, tacky: 1, boggy: 2, avoid: 3 };
     expect(order[byClass['engineered']]).toBeLessThanOrEqual(order[byClass['reinforced']]);
     expect(order[byClass['reinforced']]).toBeLessThanOrEqual(order[byClass['natural-improved']]);
     expect(order[byClass['natural-improved']]).toBeLessThanOrEqual(order[byClass['natural']]);
@@ -86,8 +79,6 @@ describe('scoreConditions — TerrainClass sensitivity', () => {
 });
 
 describe('scoreConditions — temperature and wind adjustments', () => {
-  const rain = makeDaily(new Array(14).fill(3));
-
   it('freezing temps increase saturation', () => {
     const cold   = scoreConditions(CENTRE, makeDaily(new Array(14).fill(3), -2), 0.5);
     const normal = scoreConditions(CENTRE, makeDaily(new Array(14).fill(3), 10), 0.5);
@@ -96,13 +87,13 @@ describe('scoreConditions — temperature and wind adjustments', () => {
 
   it('warm temps reduce saturation', () => {
     const warm   = scoreConditions(CENTRE, makeDaily(new Array(14).fill(3), 15), 0.5);
-    const normal = scoreConditions(CENTRE, rain, 0.5);
+    const normal = scoreConditions(CENTRE, makeDaily(new Array(14).fill(3), 10), 0.5);
     expect(warm.saturationPct).toBeLessThan(normal.saturationPct);
   });
 
   it('high wind reduces saturation', () => {
-    const windy  = scoreConditions(CENTRE, makeDaily(new Array(14).fill(3), 10, 30), 0.5);
-    const calm   = scoreConditions(CENTRE, makeDaily(new Array(14).fill(3), 10, 5),  0.5);
+    const windy = scoreConditions(CENTRE, makeDaily(new Array(14).fill(3), 10, 30), 0.5);
+    const calm  = scoreConditions(CENTRE, makeDaily(new Array(14).fill(3), 10, 5),  0.5);
     expect(windy.saturationPct).toBeLessThan(calm.saturationPct);
   });
 });

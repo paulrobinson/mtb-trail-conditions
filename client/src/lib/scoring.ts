@@ -4,13 +4,15 @@ import type {
   OpenMeteoResponse,
   ConditionResult,
   ConditionKey,
-  ScoredTrail,
+  ScoredTerrainClass,
 } from '@shared/types';
 
 export type ScoringDaily = Pick<
   OpenMeteoResponse['daily'],
   'precipitation_sum' | 'temperature_2m_mean' | 'wind_speed_10m_max'
 >;
+
+const ALL_TERRAIN_CLASSES: TerrainClass[] = ['engineered', 'reinforced', 'natural-improved', 'natural'];
 
 // How much each terrain class amplifies the weighted rainfall score.
 // Lower = drains faster / less sensitive to rain accumulation.
@@ -40,14 +42,14 @@ function getDryStreak(precipArr: (number | null)[]): number {
  *     - days 8+      → weight 0.6
  *  2. drainageFactor (BGS-derived, 0.2–0.85) reduces effective saturation.
  *  3. Temperature and wind adjustments.
- *  4. Per-trail TerrainClass sensitivity scales the score for individual trails.
+ *  4. All four TerrainClass categories are always scored and returned.
  *  5. Maps to Dry / Grippy / Muddy / Boggy.
  *
  *  Pass a slice of daily data up to and including the target date.
  *  All totals (last 7d, last 14d, dry streak) are relative to the end of that slice.
  */
 export function scoreConditions(
-  centre: TrailCentre,
+  _centre: TrailCentre,
   daily: ScoringDaily,
   drainageFactor: number
 ): ConditionResult {
@@ -79,28 +81,16 @@ export function scoreConditions(
   else if (weightedRain < 65)  { conditionKey = 'boggy'; conditionLabel = 'Muddy'; }
   else                         { conditionKey = 'avoid'; conditionLabel = 'Boggy'; }
 
-  // One entry per terrain class, worst (highest) effective score wins
-  const CLASS_ORDER: TerrainClass[] = ['engineered', 'reinforced', 'natural-improved', 'natural'];
-  const worstByClass = new Map<TerrainClass, number>();
-  for (const trail of centre.trails) {
-    const effectiveScore = weightedRain * TERRAIN_SENSITIVITY[trail.terrainClass];
-    const prev = worstByClass.get(trail.terrainClass) ?? -Infinity;
-    if (effectiveScore > prev) worstByClass.set(trail.terrainClass, effectiveScore);
-  }
-
-  const trailConditions: ScoredTrail[] = CLASS_ORDER
-    .filter(tc => worstByClass.has(tc))
-    .map(tc => {
-      const effectiveScore = worstByClass.get(tc)!;
-      const trail = centre.trails.find(t => t.terrainClass === tc)!;
-      let status: string;
-      let statusClass: ConditionKey;
-      if (effectiveScore < 15)       { status = 'Dry';    statusClass = 'good'; }
-      else if (effectiveScore < 35)  { status = 'Grippy'; statusClass = 'tacky'; }
-      else if (effectiveScore < 65)  { status = 'Muddy';  statusClass = 'boggy'; }
-      else                           { status = 'Boggy';  statusClass = 'avoid'; }
-      return { ...trail, status, statusClass };
-    });
+  const trailConditions: ScoredTerrainClass[] = ALL_TERRAIN_CLASSES.map(terrainClass => {
+    const effectiveScore = weightedRain * TERRAIN_SENSITIVITY[terrainClass];
+    let status: string;
+    let statusClass: ConditionKey;
+    if (effectiveScore < 15)       { status = 'Dry';    statusClass = 'good'; }
+    else if (effectiveScore < 35)  { status = 'Grippy'; statusClass = 'tacky'; }
+    else if (effectiveScore < 65)  { status = 'Muddy';  statusClass = 'boggy'; }
+    else                           { status = 'Boggy';  statusClass = 'avoid'; }
+    return { terrainClass, status, statusClass };
+  });
 
   const precip = daily.precipitation_sum;
   const totalLast7  = precip.slice(-7).reduce<number>((a, b) => a + (b ?? 0), 0);

@@ -1,11 +1,6 @@
 export type TerrainClass = 'engineered' | 'reinforced' | 'natural-improved' | 'natural';
 export type ConditionKey = 'good' | 'tacky' | 'boggy' | 'avoid';
 
-export interface Trail {
-  name: string;
-  terrainClass: TerrainClass;
-}
-
 export interface TrailCentre {
   id: string;
   name: string;
@@ -14,7 +9,6 @@ export interface TrailCentre {
   lon: number;
   timezone: string;
   note: string;
-  trails: Trail[];
 }
 
 export interface OpenMeteoDaily {
@@ -52,7 +46,8 @@ export interface WeatherApiResponse {
   centres: CentreWeather[];
 }
 
-export interface ScoredTrail extends Trail {
+export interface ScoredTerrainClass {
+  terrainClass: TerrainClass;
   status: string;
   statusClass: ConditionKey;
 }
@@ -60,7 +55,7 @@ export interface ScoredTrail extends Trail {
 export interface ConditionResult {
   conditionKey: ConditionKey;
   conditionLabel: string;
-  trailConditions: ScoredTrail[];
+  trailConditions: ScoredTerrainClass[];
   saturationPct: number;
   totalLast7: string;
   totalLast14: string;
