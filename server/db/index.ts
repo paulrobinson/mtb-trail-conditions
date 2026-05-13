@@ -19,5 +19,11 @@ sqlite.exec(`
     centre_id TEXT PRIMARY KEY,
     data      TEXT NOT NULL,
     fetched_at INTEGER NOT NULL
-  )
+  );
+  CREATE TABLE IF NOT EXISTS geology_cache (
+    centre_id        TEXT PRIMARY KEY,
+    drainage_factor  REAL NOT NULL,
+    rock_description TEXT NOT NULL,
+    fetched_at       INTEGER NOT NULL
+  );
 `);

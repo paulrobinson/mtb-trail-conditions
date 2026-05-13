@@ -10,13 +10,10 @@ export const TRAIL_CENTRES: TrailCentre[] = [
     timezone: 'Europe/London',
     note: 'Natural enduro trails — steep, technical, roots & shale. All black or orange grade.',
     trails: [
-      { grade: 'black',   label: 'Black',   name: 'Black (e.g. Flat White, Wardell Way, Community Service)', surfaceType: 'mixed' },
-      { grade: 'orange',  label: 'Orange',  name: 'Orange/Double-black (e.g. Big Bore, Dances with Wolves, 3G)', surfaceType: 'loam-rock' },
-      { grade: 'natural', label: 'Natural', name: 'Natural / off-piste (unbuilt forest lines)', surfaceType: 'natural' },
+      { grade: 'black',   label: 'Black',   name: 'Black (e.g. Flat White, Wardell Way, Community Service)', terrainClass: 'reinforced' },
+      { grade: 'orange',  label: 'Orange',  name: 'Orange/Double-black (e.g. Big Bore, Dances with Wolves, 3G)', terrainClass: 'natural-improved' },
+      { grade: 'natural', label: 'Natural', name: 'Natural / off-piste (unbuilt forest lines)', terrainClass: 'natural' },
     ],
-    // Rocky venue drains fast — 2-3 dry days adequate after heavy rain
-    drainageFactor: 0.72,
-    surfaceSensitivity: { hardpack: 0.4, mixed: 0.7, 'loam-rock': 1.0, natural: 1.3 },
   },
   {
     id: 'glentress',
@@ -27,14 +24,11 @@ export const TRAIL_CENTRES: TrailCentre[] = [
     timezone: 'Europe/London',
     note: 'World-class trail centre — varied loamy singletrack, forest DH',
     trails: [
-      { grade: 'blue',    label: 'Blue',    name: 'Blue (Spooky Wood, flowing singletrack)', surfaceType: 'loam' },
-      { grade: 'red',     label: 'Red',     name: 'Red (Thunderstruck, Steep & Loamy)', surfaceType: 'loam' },
-      { grade: 'black',   label: 'Black',   name: 'Black (tech features, rock cruxes)', surfaceType: 'loam-rock' },
-      { grade: 'natural', label: 'Natural', name: "Natural / off-piste (Janet's Brae, unbuilt lines)", surfaceType: 'natural' },
+      { grade: 'blue',    label: 'Blue',    name: 'Blue (Spooky Wood, flowing singletrack)', terrainClass: 'reinforced' },
+      { grade: 'red',     label: 'Red',     name: 'Red (Thunderstruck, Steep & Loamy)', terrainClass: 'reinforced' },
+      { grade: 'black',   label: 'Black',   name: 'Black (tech features, rock cruxes)', terrainClass: 'natural-improved' },
+      { grade: 'natural', label: 'Natural', name: "Natural / off-piste (Janet's Brae, unbuilt lines)", terrainClass: 'natural' },
     ],
-    // Forest soil, decent drainage but loam holds water longer
-    drainageFactor: 0.55,
-    surfaceSensitivity: { hardpack: 0.35, loam: 1.0, 'loam-rock': 0.85, natural: 1.2 },
   },
   {
     id: 'hamsterley',
@@ -45,13 +39,10 @@ export const TRAIL_CENTRES: TrailCentre[] = [
     timezone: 'Europe/London',
     note: 'Varied forest DH & trail — clay-heavy soil, slower to drain',
     trails: [
-      { grade: 'blue',    label: 'Blue',    name: 'Blue (Squirrel Chaser)', surfaceType: 'mixed' },
-      { grade: 'red',     label: 'Red',     name: "Red (Polty's, Nitrous, Big 'Un)", surfaceType: 'clay-loam' },
-      { grade: 'black',   label: 'Black',   name: 'Black (The Edge, Bone Shaker)', surfaceType: 'clay-loam' },
-      { grade: 'natural', label: 'Natural', name: 'Natural / off-piste (unbuilt forest lines)', surfaceType: 'natural' },
+      { grade: 'blue',    label: 'Blue',    name: 'Blue (Squirrel Chaser)', terrainClass: 'reinforced' },
+      { grade: 'red',     label: 'Red',     name: "Red (Polty's, Nitrous, Big 'Un)", terrainClass: 'natural-improved' },
+      { grade: 'black',   label: 'Black',   name: 'Black (The Edge, Bone Shaker)', terrainClass: 'natural-improved' },
+      { grade: 'natural', label: 'Natural', name: 'Natural / off-piste (unbuilt forest lines)', terrainClass: 'natural' },
     ],
-    // Clay soil: slow draining — needs 4-5 dry days to recover
-    drainageFactor: 0.38,
-    surfaceSensitivity: { hardpack: 0.3, mixed: 0.65, 'clay-loam': 1.0, natural: 1.4 },
   },
 ];

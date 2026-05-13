@@ -61,7 +61,7 @@ export function Home() {
 
       <main className="py-8 pb-16">
         <div className="max-w-[1100px] mx-auto px-4 grid gap-8">
-          {data?.centres.map(({ id, weather }) => {
+          {data?.centres.map(({ id, weather, drainageFactor }) => {
             const centre = TRAIL_CENTRES.find(c => c.id === id);
             if (!centre) return null;
             return (
@@ -69,6 +69,7 @@ export function Home() {
                 key={id}
                 centre={centre}
                 weatherData={weather}
+                drainageFactor={drainageFactor}
                 selectedDate={selectedDate}
                 onSelectDate={setSelectedDate}
               />

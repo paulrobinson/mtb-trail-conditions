@@ -1,12 +1,12 @@
+export type TerrainClass = 'engineered' | 'reinforced' | 'natural-improved' | 'natural';
 export type TrailGrade = 'green' | 'blue' | 'red' | 'black' | 'orange' | 'natural';
-export type SurfaceType = 'hardpack' | 'mixed' | 'loam' | 'loam-rock' | 'clay-loam' | 'natural';
 export type ConditionKey = 'good' | 'tacky' | 'boggy' | 'avoid';
 
 export interface Trail {
   grade: TrailGrade;
   label: string;
   name: string;
-  surfaceType: SurfaceType;
+  terrainClass: TerrainClass;
 }
 
 export interface TrailCentre {
@@ -18,8 +18,6 @@ export interface TrailCentre {
   timezone: string;
   note: string;
   trails: Trail[];
-  drainageFactor: number;
-  surfaceSensitivity: Partial<Record<SurfaceType, number>>;
 }
 
 export interface OpenMeteoDaily {
@@ -50,6 +48,7 @@ export interface CentreWeather {
   id: string;
   weather: OpenMeteoResponse;
   cachedAt: string;
+  drainageFactor: number;
 }
 
 export interface WeatherApiResponse {
