@@ -1,14 +1,20 @@
 import { useState } from 'react';
 import type { MouseEvent } from 'react';
-import type { ScoredTrail } from '@shared/types';
+import type { ScoredTrail, TerrainClass } from '@shared/types';
 
-const GRADE_BG: Record<string, string> = {
-  green:   '#3a7d44',
-  blue:    '#1a6fa8',
-  red:     '#c0392b',
-  black:   '#1a1a1a',
-  orange:  '#c45c00',
-  natural: '#7a5c3a',
+const TERRAIN_LABEL: Record<TerrainClass, string> = {
+  'engineered':       'Engineered',
+  'reinforced':       'Reinforced',
+  'natural-improved': 'Natural+',
+  'natural':          'Natural',
+};
+
+// Colours run from cool (fast-draining) to earthy (slow-draining)
+const TERRAIN_BG: Record<TerrainClass, string> = {
+  'engineered':       '#1a6fa8',
+  'reinforced':       '#3a7d44',
+  'natural-improved': '#c45c00',
+  'natural':          '#7a5c3a',
 };
 
 const STATUS_COLOR: Record<string, string> = {
@@ -46,11 +52,11 @@ export function TrailTypesList({ trailConditions }: TrailTypesListProps) {
           <div className="flex items-center gap-2 min-w-0 flex-1">
             <span
               className="text-xs font-bold px-1.5 py-0.5 rounded text-white cursor-pointer select-none flex-shrink-0"
-              style={{ background: GRADE_BG[trail.grade] ?? '#888' }}
+              style={{ background: TERRAIN_BG[trail.terrainClass] }}
               onMouseEnter={e => handleMouseEnter(e, trail.name)}
               onMouseLeave={() => setTooltip(null)}
             >
-              {trail.label}
+              {TERRAIN_LABEL[trail.terrainClass]}
             </span>
           </div>
           <span

@@ -10,9 +10,9 @@ export const TRAIL_CENTRES: TrailCentre[] = [
     timezone: 'Europe/London',
     note: 'Natural enduro trails — steep, technical, roots & shale. All black or orange grade.',
     trails: [
-      { grade: 'black',   label: 'Black',   name: 'Black (e.g. Flat White, Wardell Way, Community Service)', terrainClass: 'reinforced' },
-      { grade: 'orange',  label: 'Orange',  name: 'Orange/Double-black (e.g. Big Bore, Dances with Wolves, 3G)', terrainClass: 'natural-improved' },
-      { grade: 'natural', label: 'Natural', name: 'Natural / off-piste (unbuilt forest lines)', terrainClass: 'natural' },
+      { name: 'Built trails (e.g. Flat White, Wardell Way, Community Service)', terrainClass: 'reinforced' },
+      { name: 'Natural-line trails (e.g. Big Bore, Dances with Wolves, 3G)',    terrainClass: 'natural-improved' },
+      { name: 'Off-piste (unbuilt forest lines)',                                terrainClass: 'natural' },
     ],
   },
   {
@@ -24,10 +24,10 @@ export const TRAIL_CENTRES: TrailCentre[] = [
     timezone: 'Europe/London',
     note: 'World-class trail centre — varied loamy singletrack, forest DH',
     trails: [
-      { grade: 'blue',    label: 'Blue',    name: 'Blue (Spooky Wood, flowing singletrack)', terrainClass: 'reinforced' },
-      { grade: 'red',     label: 'Red',     name: 'Red (Thunderstruck, Steep & Loamy)', terrainClass: 'reinforced' },
-      { grade: 'black',   label: 'Black',   name: 'Black (tech features, rock cruxes)', terrainClass: 'natural-improved' },
-      { grade: 'natural', label: 'Natural', name: "Natural / off-piste (Janet's Brae, unbuilt lines)", terrainClass: 'natural' },
+      { name: 'Built flowing (e.g. Spooky Wood)',                               terrainClass: 'reinforced' },
+      { name: 'Built tech (e.g. Thunderstruck, Steep & Loamy)',                 terrainClass: 'reinforced' },
+      { name: 'Natural-line tech (e.g. rock cruxes, tech features)',            terrainClass: 'natural-improved' },
+      { name: "Off-piste (e.g. Janet's Brae, unbuilt lines)",                   terrainClass: 'natural' },
     ],
   },
   {
@@ -39,10 +39,10 @@ export const TRAIL_CENTRES: TrailCentre[] = [
     timezone: 'Europe/London',
     note: 'Varied forest DH & trail — clay-heavy soil, slower to drain',
     trails: [
-      { grade: 'blue',    label: 'Blue',    name: 'Blue (Squirrel Chaser)', terrainClass: 'reinforced' },
-      { grade: 'red',     label: 'Red',     name: "Red (Polty's, Nitrous, Big 'Un)", terrainClass: 'natural-improved' },
-      { grade: 'black',   label: 'Black',   name: 'Black (The Edge, Bone Shaker)', terrainClass: 'natural-improved' },
-      { grade: 'natural', label: 'Natural', name: 'Natural / off-piste (unbuilt forest lines)', terrainClass: 'natural' },
+      { name: 'Built (e.g. Squirrel Chaser)',                                   terrainClass: 'reinforced' },
+      { name: "Natural-line (e.g. Polty's, Nitrous, Big 'Un)",                  terrainClass: 'natural-improved' },
+      { name: 'Natural-line tech (e.g. The Edge, Bone Shaker)',                 terrainClass: 'natural-improved' },
+      { name: 'Off-piste (unbuilt forest lines)',                                terrainClass: 'natural' },
     ],
   },
 ];

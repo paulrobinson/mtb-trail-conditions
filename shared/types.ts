@@ -1,10 +1,7 @@
 export type TerrainClass = 'engineered' | 'reinforced' | 'natural-improved' | 'natural';
-export type TrailGrade = 'green' | 'blue' | 'red' | 'black' | 'orange' | 'natural';
 export type ConditionKey = 'good' | 'tacky' | 'boggy' | 'avoid';
 
 export interface Trail {
-  grade: TrailGrade;
-  label: string;
   name: string;
   terrainClass: TerrainClass;
 }

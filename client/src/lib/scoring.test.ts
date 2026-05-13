@@ -11,10 +11,10 @@ const CENTRE: TrailCentre = {
   timezone: 'Europe/London',
   note: '',
   trails: [
-    { grade: 'black',   label: 'Black',   name: 'Engineered trail',       terrainClass: 'engineered' },
-    { grade: 'black',   label: 'Black',   name: 'Reinforced trail',       terrainClass: 'reinforced' },
-    { grade: 'natural', label: 'Natural', name: 'Natural-improved trail', terrainClass: 'natural-improved' },
-    { grade: 'natural', label: 'Natural', name: 'Natural trail',          terrainClass: 'natural' },
+    { name: 'Engineered trail',       terrainClass: 'engineered' },
+    { name: 'Reinforced trail',       terrainClass: 'reinforced' },
+    { name: 'Natural-improved trail', terrainClass: 'natural-improved' },
+    { name: 'Natural trail',          terrainClass: 'natural' },
   ],
 };
 
