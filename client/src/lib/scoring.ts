@@ -1,10 +1,10 @@
 import type {
   TrailCentre,
+  TerrainClass,
   OpenMeteoResponse,
   ConditionResult,
   ConditionKey,
   ScoredTrail,
-  TerrainClass,
 } from '@shared/types';
 
 export type ScoringDaily = Pick<
@@ -79,17 +79,28 @@ export function scoreConditions(
   else if (weightedRain < 65)  { conditionKey = 'boggy'; conditionLabel = 'Muddy'; }
   else                         { conditionKey = 'avoid'; conditionLabel = 'Boggy'; }
 
-  const trailConditions: ScoredTrail[] = centre.trails.map(trail => {
-    const sensitivity = TERRAIN_SENSITIVITY[trail.terrainClass];
-    const effectiveScore = weightedRain * sensitivity;
-    let status: string;
-    let statusClass: ConditionKey;
-    if (effectiveScore < 15)       { status = 'Dry';    statusClass = 'good'; }
-    else if (effectiveScore < 35)  { status = 'Grippy'; statusClass = 'tacky'; }
-    else if (effectiveScore < 65)  { status = 'Muddy';  statusClass = 'boggy'; }
-    else                           { status = 'Boggy';  statusClass = 'avoid'; }
-    return { ...trail, status, statusClass };
-  });
+  // One entry per terrain class, worst (highest) effective score wins
+  const CLASS_ORDER: TerrainClass[] = ['engineered', 'reinforced', 'natural-improved', 'natural'];
+  const worstByClass = new Map<TerrainClass, number>();
+  for (const trail of centre.trails) {
+    const effectiveScore = weightedRain * TERRAIN_SENSITIVITY[trail.terrainClass];
+    const prev = worstByClass.get(trail.terrainClass) ?? -Infinity;
+    if (effectiveScore > prev) worstByClass.set(trail.terrainClass, effectiveScore);
+  }
+
+  const trailConditions: ScoredTrail[] = CLASS_ORDER
+    .filter(tc => worstByClass.has(tc))
+    .map(tc => {
+      const effectiveScore = worstByClass.get(tc)!;
+      const trail = centre.trails.find(t => t.terrainClass === tc)!;
+      let status: string;
+      let statusClass: ConditionKey;
+      if (effectiveScore < 15)       { status = 'Dry';    statusClass = 'good'; }
+      else if (effectiveScore < 35)  { status = 'Grippy'; statusClass = 'tacky'; }
+      else if (effectiveScore < 65)  { status = 'Muddy';  statusClass = 'boggy'; }
+      else                           { status = 'Boggy';  statusClass = 'avoid'; }
+      return { ...trail, status, statusClass };
+    });
 
   const precip = daily.precipitation_sum;
   const totalLast7  = precip.slice(-7).reduce<number>((a, b) => a + (b ?? 0), 0);
