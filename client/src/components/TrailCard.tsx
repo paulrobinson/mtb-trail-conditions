@@ -89,7 +89,7 @@ export function TrailCard({ centre, weatherData, selectedDate, onSelectDate }: T
         {/* Right: forecast + day stats */}
         <div className="p-5 px-6 min-w-0 overflow-hidden border-l border-divider max-[700px]:border-l-0 max-[700px]:border-t max-[700px]:border-divider">
           <p className="text-xs font-bold text-text-muted uppercase tracking-widest mb-4">
-            7-Day Forecast
+            10-Day Forecast
           </p>
           <ForecastStrip
             daily={days}

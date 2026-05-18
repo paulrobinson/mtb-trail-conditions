@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { rainfallWindow } from './RainfallChart';
 
 describe('rainfallWindow', () => {
-  // 21-day dataset: indices 0–20, todayIdx = 14 (14 past days, 7 forecast)
+  // 21-day dataset: indices 0–20, todayIdx = 14 (14 past days, 7 shown here; real data uses 10)
   const totalDays = 21;
   const todayIdx = 14;
 
