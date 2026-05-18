@@ -11,7 +11,7 @@ export function DatePickerBar({ daily, todayStr, selectedDate, onSelect }: DateP
   const todayIdx = daily.time.indexOf(todayStr);
   if (todayIdx < 0) return null;
 
-  const dates = daily.time.slice(todayIdx, todayIdx + 7);
+  const dates = daily.time.slice(todayIdx, todayIdx + 10);
 
   return (
     <div className="border-b border-divider bg-surface">
