@@ -11,7 +11,7 @@ interface ForecastStripProps {
 
 export function ForecastStrip({ daily, todayIdx, selectedDate, todayStr, onSelect }: ForecastStripProps) {
   const forecastStart = todayIdx >= 0 ? todayIdx : 0;
-  const sliceDates = daily.time.slice(forecastStart, forecastStart + 7);
+  const sliceDates = daily.time.slice(forecastStart, forecastStart + 10);
 
   return (
     <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'thin' }}>

@@ -21,7 +21,7 @@ async function fetchFromOpenMeteo(centreId: string): Promise<OpenMeteoResponse> 
     longitude: String(centre.lon),
     timezone: centre.timezone,
     past_days: '14',
-    forecast_days: '7',
+    forecast_days: '10',
     daily: [
       'precipitation_sum',
       'temperature_2m_max',
