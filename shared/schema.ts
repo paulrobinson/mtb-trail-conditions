@@ -28,6 +28,7 @@ export const centreWeatherSchema = z.object({
   id: z.string(),
   weather: openMeteoResponseSchema,
   cachedAt: z.string(),
+  drainageFactor: z.number().default(0.5),
 });
 
 export const weatherApiResponseSchema = z.object({

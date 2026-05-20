@@ -1,15 +1,27 @@
 import type {
   TrailCentre,
+  TerrainClass,
   OpenMeteoResponse,
   ConditionResult,
   ConditionKey,
-  ScoredTrail,
+  ScoredTerrainClass,
 } from '@shared/types';
 
 export type ScoringDaily = Pick<
   OpenMeteoResponse['daily'],
   'precipitation_sum' | 'temperature_2m_mean' | 'wind_speed_10m_max'
 >;
+
+const ALL_TERRAIN_CLASSES: TerrainClass[] = ['engineered', 'reinforced', 'natural-improved', 'natural'];
+
+// How much each terrain class amplifies the weighted rainfall score.
+// Lower = drains faster / less sensitive to rain accumulation.
+const TERRAIN_SENSITIVITY: Record<TerrainClass, number> = {
+  'engineered':       0.30,
+  'reinforced':       0.55,
+  'natural-improved': 0.85,
+  'natural':          1.20,
+};
 
 function getDryStreak(precipArr: (number | null)[]): number {
   let streak = 0;
@@ -28,16 +40,18 @@ function getDryStreak(precipArr: (number | null)[]): number {
  *     - last 3 days  → weight 3.0
  *     - days 4–7     → weight 1.5
  *     - days 8+      → weight 0.6
- *  2. Per-centre drainage factor reduces effective saturation.
+ *  2. drainageFactor (BGS-derived, 0.2–0.85) reduces effective saturation.
  *  3. Temperature and wind adjustments.
- *  4. Maps to Dry / Grippy / Muddy / Boggy.
+ *  4. All four TerrainClass categories are always scored and returned.
+ *  5. Maps to Dry / Grippy / Muddy / Boggy.
  *
  *  Pass a slice of daily data up to and including the target date.
  *  All totals (last 7d, last 14d, dry streak) are relative to the end of that slice.
  */
 export function scoreConditions(
-  centre: TrailCentre,
-  daily: ScoringDaily
+  _centre: TrailCentre,
+  daily: ScoringDaily,
+  drainageFactor: number
 ): ConditionResult {
   const n = daily.precipitation_sum.length;
 
@@ -48,7 +62,7 @@ export function scoreConditions(
     let weight = 0.6;
     if (daysAgo <= 2)      weight = 3.0;
     else if (daysAgo <= 6) weight = 1.5;
-    weightedRain += mm * weight * (1 - centre.drainageFactor * (daysAgo / n));
+    weightedRain += mm * weight * (1 - drainageFactor * (daysAgo / n));
   }
 
   const recentTemps = daily.temperature_2m_mean.slice(-3);
@@ -60,23 +74,24 @@ export function scoreConditions(
   const avgWind = recentWind.reduce<number>((a, b) => a + (b ?? 0), 0) / recentWind.length;
   if (avgWind > 25) weightedRain *= 0.9;
 
+  // Overall badge anchored to reinforced terrain — consistent with the trail type rows
+  const overallScore = weightedRain * TERRAIN_SENSITIVITY['reinforced'];
   let conditionKey: ConditionKey;
   let conditionLabel: string;
-  if (weightedRain < 15)       { conditionKey = 'good';  conditionLabel = 'Dry'; }
-  else if (weightedRain < 35)  { conditionKey = 'tacky'; conditionLabel = 'Grippy'; }
-  else if (weightedRain < 65)  { conditionKey = 'boggy'; conditionLabel = 'Muddy'; }
+  if (overallScore < 15)       { conditionKey = 'good';  conditionLabel = 'Dry'; }
+  else if (overallScore < 35)  { conditionKey = 'tacky'; conditionLabel = 'Grippy'; }
+  else if (overallScore < 65)  { conditionKey = 'boggy'; conditionLabel = 'Muddy'; }
   else                         { conditionKey = 'avoid'; conditionLabel = 'Boggy'; }
 
-  const trailConditions: ScoredTrail[] = centre.trails.map(trail => {
-    const sensitivity = centre.surfaceSensitivity[trail.surfaceType] ?? 0.7;
-    const effectiveScore = weightedRain * sensitivity;
+  const trailConditions: ScoredTerrainClass[] = ALL_TERRAIN_CLASSES.map(terrainClass => {
+    const effectiveScore = weightedRain * TERRAIN_SENSITIVITY[terrainClass];
     let status: string;
     let statusClass: ConditionKey;
     if (effectiveScore < 15)       { status = 'Dry';    statusClass = 'good'; }
     else if (effectiveScore < 35)  { status = 'Grippy'; statusClass = 'tacky'; }
     else if (effectiveScore < 65)  { status = 'Muddy';  statusClass = 'boggy'; }
     else                           { status = 'Boggy';  statusClass = 'avoid'; }
-    return { ...trail, status, statusClass };
+    return { terrainClass, status, statusClass };
   });
 
   const precip = daily.precipitation_sum;

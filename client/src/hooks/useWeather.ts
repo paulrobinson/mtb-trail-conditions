@@ -43,9 +43,10 @@ async function fetchWeather(): Promise<WeatherApiResponse> {
   if (DIRECT) {
     const centres = await Promise.all(
       TRAIL_CENTRES.map(async c => ({
-        id:       c.id,
-        weather:  await fetchCentreDirect(c),
-        cachedAt: new Date().toISOString(),
+        id:             c.id,
+        weather:        await fetchCentreDirect(c),
+        cachedAt:       new Date().toISOString(),
+        drainageFactor: 0.5, // BGS lookup not available in direct/static mode
       }))
     );
     return weatherApiResponseSchema.parse({ centres });

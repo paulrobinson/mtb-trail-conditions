@@ -12,11 +12,12 @@ import { RainfallChart } from '@/components/RainfallChart';
 interface TrailCardProps {
   centre: TrailCentre;
   weatherData: OpenMeteoResponse;
+  drainageFactor: number;
   selectedDate: string;
   onSelectDate: (date: string) => void;
 }
 
-export function TrailCard({ centre, weatherData, selectedDate, onSelectDate }: TrailCardProps) {
+export function TrailCard({ centre, weatherData, drainageFactor, selectedDate, onSelectDate }: TrailCardProps) {
   const today  = getTodayStr();
   const days   = weatherData.daily;
   const n      = days.time.length;
@@ -30,7 +31,7 @@ export function TrailCard({ centre, weatherData, selectedDate, onSelectDate }: T
     precipitation_sum:   days.precipitation_sum.slice(0, sliceEnd),
     temperature_2m_mean: days.temperature_2m_mean.slice(0, sliceEnd),
     wind_speed_10m_max:  days.wind_speed_10m_max.slice(0, sliceEnd),
-  });
+  }, drainageFactor);
 
   const scoreDateLabel = isToday
     ? "Today's conditions"

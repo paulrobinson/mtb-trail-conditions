@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { eq } from 'drizzle-orm';
 import { db } from './db/index.js';
 import { weatherCache } from './db/schema.js';
+import { getGeologyForCentre } from './geology.js';
 import { TRAIL_CENTRES } from '../shared/centres.js';
 import { openMeteoResponseSchema } from '../shared/schema.js';
 import type { OpenMeteoResponse, WeatherApiResponse } from '../shared/types.js';
@@ -73,8 +74,11 @@ router.get('/weather', async (_req, res) => {
   try {
     const results = await Promise.all(
       TRAIL_CENTRES.map(async c => {
-        const { weather, cachedAt } = await getWeatherForCentre(c.id);
-        return { id: c.id, weather, cachedAt };
+        const [{ weather, cachedAt }, drainageFactor] = await Promise.all([
+          getWeatherForCentre(c.id),
+          getGeologyForCentre(c.id),
+        ]);
+        return { id: c.id, weather, cachedAt, drainageFactor };
       })
     );
 
