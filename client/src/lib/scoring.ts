@@ -74,11 +74,13 @@ export function scoreConditions(
   const avgWind = recentWind.reduce<number>((a, b) => a + (b ?? 0), 0) / recentWind.length;
   if (avgWind > 25) weightedRain *= 0.9;
 
+  // Overall badge anchored to reinforced terrain — consistent with the trail type rows
+  const overallScore = weightedRain * TERRAIN_SENSITIVITY['reinforced'];
   let conditionKey: ConditionKey;
   let conditionLabel: string;
-  if (weightedRain < 15)       { conditionKey = 'good';  conditionLabel = 'Dry'; }
-  else if (weightedRain < 35)  { conditionKey = 'tacky'; conditionLabel = 'Grippy'; }
-  else if (weightedRain < 65)  { conditionKey = 'boggy'; conditionLabel = 'Muddy'; }
+  if (overallScore < 15)       { conditionKey = 'good';  conditionLabel = 'Dry'; }
+  else if (overallScore < 35)  { conditionKey = 'tacky'; conditionLabel = 'Grippy'; }
+  else if (overallScore < 65)  { conditionKey = 'boggy'; conditionLabel = 'Muddy'; }
   else                         { conditionKey = 'avoid'; conditionLabel = 'Boggy'; }
 
   const trailConditions: ScoredTerrainClass[] = ALL_TERRAIN_CLASSES.map(terrainClass => {
