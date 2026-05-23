@@ -5,7 +5,6 @@ import { getTodayStr, formatLongDate } from '@/lib/utils';
 import { Card, CardHeader, CardFooter } from '@/components/ui/card';
 import { ConditionBadge } from '@/components/ConditionBadge';
 import { SaturationMeter } from '@/components/SaturationMeter';
-import { TrailTypesList } from '@/components/TrailTypesList';
 import { ForecastStrip } from '@/components/ForecastStrip';
 import { RainfallChart } from '@/components/RainfallChart';
 
@@ -79,12 +78,6 @@ export function TrailCard({ centre, weatherData, drainageFactor, selectedDate, o
             totalLast14={score.totalLast14}
             dryStreak={score.dryStreak}
           />
-          <div className="mt-4">
-            <p className="text-xs font-bold text-text-muted uppercase tracking-widest mb-2">
-              Trail Types
-            </p>
-            <TrailTypesList trailConditions={score.trailConditions} />
-          </div>
         </div>
 
         {/* Right: forecast + day stats */}
