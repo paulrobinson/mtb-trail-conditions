@@ -28,4 +28,13 @@ export const TRAIL_CENTRES: TrailCentre[] = [
     timezone: 'Europe/London',
     note: 'Varied forest DH & trail — clay-heavy soil, slower to drain',
   },
+  {
+    id: 'thrunton',
+    name: 'Thrunton Wood',
+    location: 'Rothbury, Northumberland, North East England',
+    lat: 55.3671,
+    lon: -1.8759,
+    timezone: 'Europe/London',
+    note: 'Natural singletrack over sandstone crags & moorland — Fell Sandstone drains well, boggy on the peaty tops',
+  },
 ];
